@@ -1,92 +1,111 @@
-package DynamicProgrammingBasic;
+package algorithm;
 
-import java.util.Random;
-import java.util.Scanner;
-
-public class Knapsack {
-
+public class Knapsack{
 	public static void main(String[] args) {
 		
-		Scanner sc=new Scanner(System.in);
-		
-		System.out.println("Enter the capacity of bag: ");
-		int w=sc.nextInt();
-		System.out.println("Enter no. of items: ");
-		int n=sc.nextInt();
-		
-		Random rand= new Random();
-		int val[]=new int[n];
-		for(int i=0;i<n;i++)
-        {
-        	val[i]=rand.nextInt(1000);
-        }
-		
-		int wt[]= new int[n];
-		for(int i=0;i<n;i++)
-        {
-        	wt[i]=rand.nextInt(100);
-        }
-		
-		int mat[][]=new int[n+1][w+1];
-		for(int r=0;r<w+1;r++)
-		{
-			mat[0][r]=0;
-		}
-		for(int c=0;c<n+1;c++)
-		{
-			mat[c][0]=0;
-		}
-		
-		for(int item=1;item<=n;item++)
-		{
-			for(int capacity=1;capacity<=w;capacity++)
-			{
-				int maxValWithoutCurr=mat[item-1][capacity];
-				int maxValWithCurr=0;
-				
-				int weightOfCurr=wt[item-1];
-				if(capacity>=weightOfCurr)
-				{
-					maxValWithCurr=val[item-1];
-					
-					int remainingCapacity=capacity-weightOfCurr;
-					maxValWithCurr+=mat[item-1][remainingCapacity];
-					
-				}
-				
-				if(maxValWithoutCurr>maxValWithCurr)
-				{
-					mat[item][capacity]=maxValWithoutCurr;
-									
-				}
-				else
-				{
-					mat[item][capacity]=maxValWithCurr;
-					
-				}
-								
-			}
-		}
-		
-		System.out.println("Total profit:" +mat[n][w]);
-		
-		System.out.println("Items selected:");
-		
-		while(n>0)
-		{
-			if(mat[n][w]!=mat[n-1][w])
-			{
-				System.out.println("Item "+ n +" 1");
-				w=w-wt[n-1];
-				
-			}
-			else
-			{
-				System.out.println("Item "+ n +" 0");
-			}
-		
-			n--;
-		}
-	}
+		int item[] = new int[]{1,2,3,4,5};
+		int weight[] = new int[]{5,10,15,22,25};
+		int value[] = new int[]{30,40,45,77,90};
 
+		float ratio[] = new float[5];
+		float count[] = new float[5];
+		
+		int m=60;
+		int n=5;
+
+		for (int k=0;k<5;k++ ) {
+			count[k]=0;
+		}
+
+		for(int i=0;i<5;i++) 
+		{
+			ratio[i]=(float)value[i]/(float)weight[i];
+		}
+
+		for(int i=0;i<n;i++)
+		{  
+			for(int j=1;j<(n-i);j++)
+			{  
+				if(ratio[j-1]>ratio[j])
+				{  
+					float temp;
+
+					temp=ratio[j-1];  
+					ratio[j-1]=ratio[j];  
+					ratio[j]=temp; 
+
+					int temp1;
+
+					temp1=weight[j-1];  
+					weight[j-1]=weight[j];  
+					weight[j]=temp1; 
+
+					temp1=value[j-1];  
+					value[j-1]=value[j];  
+					value[j]=temp1; 
+
+				}  
+
+			}  
+		}
+
+//		System.out.println();
+		
+		for(float r:ratio) 
+		{
+			System.out.print(r+" ");
+		}
+		System.out.println();
+
+
+		for(float w:weight) 
+		{
+			System.out.print(w+" ");
+		}
+		System.out.println();
+
+
+
+		for   (int i=n-1;i>=0;i--) 
+		{
+		  	if ((m-(int)weight[i])>=0) 
+		  	{
+		  		count[i]=1;
+		  		m=m-weight[i];
+		  	}
+		  	else if ((m-(int)weight[i])<0)
+		  	{
+		  		float x=(float)m/(float)weight[i];
+		  		if (x>0 && x<1) 
+		  		{
+		  			count[i]=x;
+		  			m=m-weight[i];
+		  		}
+		  		else
+		  		{
+		  			count[i]=0;
+		  		}
+		  	}
+		}  
+
+		float profit=0;
+		for (int k=0;k<5;k++ ) {
+			profit=profit+count[k]*value[k];
+		}
+		System.out.println("\nRatio vector");
+
+		for(float y:ratio) 
+		{
+			System.out.print(y+" ");
+		}
+		System.out.println("\nCount vector");
+
+		for (float z:count) {
+			System.out.print(z+" ");
+		}
+		System.out.println("\nProfit:");
+
+		System.out.println(profit);
+
+	}
 }
